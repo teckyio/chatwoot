@@ -10,7 +10,9 @@ class WhatsappWebClient extends ApiClient {
   }
 
   getInstanceStatus(accountId, uuid) {
-    return this.get(`accounts/${accountId}/whatsapp_web/instances/${uuid}/status`);
+    return this.get(
+      `accounts/${accountId}/whatsapp_web/instances/${uuid}/status`
+    );
   }
 
   deleteInstance(accountId, uuid) {
