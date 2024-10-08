@@ -21,6 +21,9 @@ export default {
       accountId: 'getCurrentAccountId',
     }),
   },
+  beforeDestroy() {
+    this.stopPolling();
+  },
   methods: {
     async createInstance() {
       this.isCreating = true;
@@ -36,21 +39,29 @@ export default {
     },
     async getQRCode() {
       try {
-        const { data } = await WhatsappWebClient.getQRCode(this.accountId, this.instanceUuid);
+        const { data } = await WhatsappWebClient.getQRCode(
+          this.accountId,
+          this.instanceUuid
+        );
         this.qrCode = data.qrCode;
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error fetching QR code:', error);
       }
     },
     async getInstanceStatus() {
       try {
-        const { data } = await WhatsappWebClient.getInstanceStatus(this.accountId, this.instanceUuid);
+        const { data } = await WhatsappWebClient.getInstanceStatus(
+          this.accountId,
+          this.instanceUuid
+        );
         this.instanceStatus = data.status;
         if (this.instanceStatus === 'READY') {
           this.stopPolling();
           this.createInbox();
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error fetching instance status:', error);
       }
     },
@@ -75,9 +86,6 @@ export default {
       }
     },
   },
-  beforeDestroy() {
-    this.stopPolling();
-  },
 };
 </script>
 
@@ -92,8 +100,8 @@ export default {
     <div class="w-[65%] flex-shrink-0 flex-grow-0 max-w-[65%]">
       <button
         class="button button--primary"
-        @click="createInstance"
         :disabled="isCreating"
+        @click="createInstance"
       >
         {{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.CREATE_BUTTON') }}
       </button>
