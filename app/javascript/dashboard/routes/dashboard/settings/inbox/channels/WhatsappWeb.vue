@@ -1,13 +1,82 @@
 <script>
+import { mapGetters } from 'vuex';
 import PageHeader from '../../SettingsSubPageHeader.vue';
+import WhatsappWebClient from '../../../../../api/whatsappWebClient';
+
 export default {
   components: {
     PageHeader,
   },
   data() {
     return {
-      provider: 'whatsapp_cloud',
+      isCreating: false,
+      qrCode: null,
+      instanceUuid: null,
+      instanceStatus: null,
+      pollingInterval: null,
     };
+  },
+  computed: {
+    ...mapGetters({
+      accountId: 'getCurrentAccountId',
+    }),
+  },
+  methods: {
+    async createInstance() {
+      this.isCreating = true;
+      try {
+        const { data } = await WhatsappWebClient.createInstance(this.accountId);
+        this.instanceUuid = data.uuid;
+        this.startPolling();
+      } catch (error) {
+        this.$toast.error(this.$t('INBOX_MGMT.ADD.WHATSAPP_WEB.API_ERROR'));
+      } finally {
+        this.isCreating = false;
+      }
+    },
+    async getQRCode() {
+      try {
+        const { data } = await WhatsappWebClient.getQRCode(this.accountId, this.instanceUuid);
+        this.qrCode = data.qrCode;
+      } catch (error) {
+        console.error('Error fetching QR code:', error);
+      }
+    },
+    async getInstanceStatus() {
+      try {
+        const { data } = await WhatsappWebClient.getInstanceStatus(this.accountId, this.instanceUuid);
+        this.instanceStatus = data.status;
+        if (this.instanceStatus === 'READY') {
+          this.stopPolling();
+          this.createInbox();
+        }
+      } catch (error) {
+        console.error('Error fetching instance status:', error);
+      }
+    },
+    startPolling() {
+      this.pollingInterval = setInterval(() => {
+        this.getQRCode();
+        this.getInstanceStatus();
+      }, 2000);
+    },
+    stopPolling() {
+      clearInterval(this.pollingInterval);
+    },
+    async createInbox() {
+      try {
+        await this.$store.dispatch('inboxes/createWhatsAppWebInbox', {
+          accountId: this.accountId,
+          uuid: this.instanceUuid,
+        });
+        this.$router.push({ name: 'settings_inboxes' });
+      } catch (error) {
+        this.$toast.error(this.$t('INBOX_MGMT.ADD.WHATSAPP_WEB.INBOX_ERROR'));
+      }
+    },
+  },
+  beforeDestroy() {
+    this.stopPolling();
   },
 };
 </script>
@@ -21,9 +90,21 @@ export default {
       :header-content="$t('INBOX_MGMT.ADD.WHATSAPP_WEB.DESC')"
     />
     <div class="w-[65%] flex-shrink-0 flex-grow-0 max-w-[65%]">
-      <label>
-        {{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.QRCODE.LABEL') }}
-      </label>
+      <button
+        class="button button--primary"
+        @click="createInstance"
+        :disabled="isCreating"
+      >
+        {{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.CREATE_BUTTON') }}
+      </button>
+      <div v-if="qrCode" class="mt-4">
+        <h3>{{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.QRCODE.LABEL') }}</h3>
+        <img :src="qrCode" alt="WhatsApp QR Code" />
+      </div>
+      <div v-if="instanceStatus" class="mt-4">
+        <h3>{{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.STATUS') }}</h3>
+        <p>{{ instanceStatus }}</p>
+      </div>
     </div>
   </div>
 </template>
