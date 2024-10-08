@@ -25,7 +25,8 @@ export default {
       return [
         { key: 'website', name: 'Website' },
         { key: 'facebook', name: 'Messenger' },
-        { key: 'whatsapp', name: 'WhatsApp' },
+        { key: 'whatsapp', name: 'WhatsApp API' },
+        { key: 'whatsapp_web', name: 'WhatsApp Unofficial' },
         { key: 'sms', name: 'SMS' },
         { key: 'email', name: 'Email' },
         {

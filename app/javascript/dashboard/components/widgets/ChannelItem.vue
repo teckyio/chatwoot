@@ -36,6 +36,7 @@ export default {
         'twilio',
         'api',
         'whatsapp',
+        'whatsapp-web',
         'sms',
         'telegram',
         'line',
