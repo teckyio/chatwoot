@@ -5,6 +5,7 @@ import InboxesAPI from '../../api/inboxes';
 import WebChannel from '../../api/channel/webChannel';
 import FBChannel from '../../api/channel/fbChannel';
 import TwilioChannel from '../../api/channel/twilioChannel';
+import WhatsappWebClient from '../../api/whatsappWebClient';
 import { throwErrorMessage } from '../utils/api';
 import AnalyticsHelper from '../../helper/AnalyticsHelper';
 import { ACCOUNT_EVENTS } from '../../helper/AnalyticsHelper/events';
@@ -194,6 +195,24 @@ export const actions = {
       commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
       sendAnalyticsEvent('facebook');
       return response.data;
+    } catch (error) {
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
+      throw new Error(error);
+    }
+  },
+  createWhatsAppWebInbox: async ({ commit }, { accountId, uuid }) => {
+    try {
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: true });
+      const response = await WhatsappWebClient.createInstance(accountId);
+      const inboxData = {
+        channel_type: 'whatsapp_web',
+        uuid: uuid,
+      };
+      const inboxResponse = await InboxesAPI.create(inboxData);
+      commit(types.default.ADD_INBOXES, inboxResponse.data);
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
+      sendAnalyticsEvent('whatsapp_web');
+      return inboxResponse.data;
     } catch (error) {
       commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
       throw new Error(error);
