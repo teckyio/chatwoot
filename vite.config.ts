@@ -45,6 +45,8 @@ if (isLibraryMode) {
 export default defineConfig({
   plugins: plugins,
   build: {
+    minify: 'terser',
+    cssMinify: 'lightningcss',
     rollupOptions: {
       output: {
         // [NOTE] when not in library mode, no new keys will be addedd or overwritten
