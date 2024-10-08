@@ -52,6 +52,15 @@ Rails.application.routes.draw do
           resources :agent_bots, only: [:index, :create, :show, :update, :destroy] do
             delete :avatar, on: :member
           end
+
+          resources :whatsapp_web, only: [] do
+            collection do
+              post :create_instance
+              get :get_qr_code
+              get :get_instance_status
+              delete :delete_instance
+            end
+          end
           resources :contact_inboxes, only: [] do
             collection do
               post :filter
