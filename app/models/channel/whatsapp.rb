@@ -17,12 +17,12 @@
 #  index_channel_whatsapp_on_phone_number  (phone_number) UNIQUE
 #
 
-class Channel::WhatsappWeb < ApplicationRecord
+class Channel::Whatsapp < ApplicationRecord
   include Channelable
   include Reauthorizable
 
-  self.table_name = 'channel_whatsapp_web'
-  EDITABLE_ATTRS = [:uuid].freeze
+  self.table_name = 'channel_whatsapp'
+  EDITABLE_ATTRS = [:phone_number, :provider, { provider_config: {} }].freeze
 
   # default at the moment is 360dialog lets change later.
   PROVIDERS = %w[default whatsapp_cloud].freeze
@@ -35,7 +35,7 @@ class Channel::WhatsappWeb < ApplicationRecord
   after_create :sync_templates
 
   def name
-    'Whatsapp Unofficial'
+    'Whatsapp'
   end
 
   def provider_service

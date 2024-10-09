@@ -3,26 +3,22 @@
 # Table name: channel_whatsapp
 #
 #  id                             :bigint           not null, primary key
-#  message_templates              :jsonb
-#  message_templates_last_updated :datetime
-#  phone_number                   :string           not null
-#  provider                       :string           default("default")
-#  provider_config                :jsonb
+#  uuid                           :string           not null
 #  created_at                     :datetime         not null
 #  updated_at                     :datetime         not null
 #  account_id                     :integer          not null
 #
 # Indexes
 #
-#  index_channel_whatsapp_on_phone_number  (phone_number) UNIQUE
+#  index_channel_whatsapp_web_on_uuid  (uuid) UNIQUE
 #
 
-class Channel::Whatsapp < ApplicationRecord
+class Channel::WhatsappWeb < ApplicationRecord
   include Channelable
   include Reauthorizable
 
-  self.table_name = 'channel_whatsapp'
-  EDITABLE_ATTRS = [:phone_number, :provider, { provider_config: {} }].freeze
+  self.table_name = 'channel_whatsapp_web'
+  EDITABLE_ATTRS = [:uuid].freeze
 
   # default at the moment is 360dialog lets change later.
   PROVIDERS = %w[default whatsapp_cloud].freeze
@@ -35,7 +31,7 @@ class Channel::Whatsapp < ApplicationRecord
   after_create :sync_templates
 
   def name
-    'Whatsapp'
+    'Whatsapp Unofficial'
   end
 
   def provider_service
