@@ -19,9 +19,9 @@ describe('#getters', () => {
     expect(getters.getTwilioInboxes(state).length).toEqual(1);
   });
 
-  it('getSMSInboxes', () => {
+  it('getSMSOrWhatsAppWebInboxes', () => {
     const state = { records: inboxList };
-    expect(getters.getSMSInboxes(state).length).toEqual(2);
+    expect(getters.getSMSOrWhatsAppWebInboxes(state).length).toEqual(2);
   });
 
   it('dialogFlowEnabledInboxes', () => {
