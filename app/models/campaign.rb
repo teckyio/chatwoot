@@ -75,7 +75,7 @@ class Campaign < ApplicationRecord
   def ensure_correct_campaign_attributes
     return if inbox.blank?
 
-    if ['Twilio SMS', 'Sms'].include?(inbox.inbox_type)
+    if ['Twilio SMS', 'Sms', 'WhatsApp Unofficial'].include?(inbox.inbox_type)
       self.campaign_type = 'one_off'
       self.scheduled_at ||= Time.now.utc
     else
