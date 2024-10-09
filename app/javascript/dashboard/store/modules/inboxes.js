@@ -103,10 +103,11 @@ export const getters = {
       item => item.channel_type === INBOX_TYPES.TWILIO
     );
   },
-  getSMSInboxes($state) {
+  getSMSOrWhatsAppWebInboxes($state) {
     return $state.records.filter(
       item =>
         item.channel_type === INBOX_TYPES.SMS ||
+        item.channel_type === INBOX_TYPES.WHATSAPP_WEB ||
         (item.channel_type === INBOX_TYPES.TWILIO && item.medium === 'sms')
     );
   },

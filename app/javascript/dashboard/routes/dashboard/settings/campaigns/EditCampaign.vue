@@ -79,7 +79,7 @@ export default {
       if (this.isOngoingType) {
         return this.$store.getters['inboxes/getWebsiteInboxes'];
       }
-      return this.$store.getters['inboxes/getSMSInboxes'];
+      return this.$store.getters['inboxes/getSMSOrWhatsAppWebInboxes'];
     },
     pageTitle() {
       return `${this.$t('CAMPAIGN.EDIT.TITLE')} - ${

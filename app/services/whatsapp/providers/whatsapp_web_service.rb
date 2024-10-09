@@ -41,7 +41,7 @@ class Whatsapp::Providers::WhatsappWebService
   private
 
   def api_base_path
-    ENV.fetch('WHATSAPP_WEB_API_URL', 'http://localhost:3000/api/v1')
+    ENV.fetch('WHATSAPP_WEB_SERVICE_URL', 'http://localhost:4000')
   end
 
   def process_response(response)

@@ -22,7 +22,7 @@ class Channel::WhatsappWeb < ApplicationRecord
   validates :uuid, presence: true, uniqueness: true
 
   def name
-    'Whatsapp Unofficial'
+    'WhatsApp Unofficial'
   end
 
   def provider_service
