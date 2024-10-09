@@ -2,38 +2,70 @@
 
 ## Overview
 
-The WhatsApp Unofficial integration allows Chatwoot to connect with WhatsApp using the wweb.js library, which provides an unofficial method to interact with WhatsApp Web. This integration is useful for users who don't have access to the official WhatsApp Business API.
+The WhatsApp Unofficial integration enables Chatwoot to connect with WhatsApp using the wweb.js library, providing an unofficial method to interact with WhatsApp Web. This integration is particularly useful for users who don't have access to the official WhatsApp Business API.
 
-## Features
+## Technical Details
 
-- Send and receive WhatsApp messages
-- Handle attachments (images, documents, etc.)
-- Distinguish between different WhatsApp Web instances using a unique UUID
+### Architecture
 
-## Setup
+1. **wweb.js Server**: A separate Node.js server running wweb.js, which handles the connection to WhatsApp Web.
+2. **Chatwoot Backend**: The main Chatwoot application, which processes incoming messages and sends outgoing messages.
+3. **WhatsappWeb Channel**: A new channel type in Chatwoot specifically for this unofficial integration.
 
-1. Deploy a separate Node.js server running wweb.js
-2. Configure the WhatsApp Web API URL and API key in your Chatwoot environment
-3. Create a new WhatsApp Web inbox in Chatwoot, which will generate a unique UUID
+### Components
 
-## How it works
+1. **Channel::WhatsappWeb Model** (`app/models/channel/whatsapp_web.rb`)
+   - Represents the WhatsApp Web channel in the database
+   - Includes a unique UUID for identifying different WhatsApp Web instances
+   - Delegates message sending and other operations to the provider service
 
-1. The wweb.js server handles the connection to WhatsApp Web
-2. Incoming messages are sent from the wweb.js server to Chatwoot via webhooks
-3. Outgoing messages are sent from Chatwoot to the wweb.js server, which then sends them through WhatsApp Web
+2. **WhatsappWebService** (`app/services/whatsapp/providers/whatsapp_web_service.rb`)
+   - Handles communication with the wweb.js server
+   - Implements methods for sending messages and handling media
 
-## Limitations
+3. **WhatsappWebEventsJob** (`app/jobs/webhooks/whatsapp_web_events_job.rb`)
+   - Processes incoming events from the wweb.js server
+   - Calls the IncomingMessageWhatsappWebService to handle incoming messages
 
-- Template messages are not supported
-- Some advanced features available in the official WhatsApp Business API may not be available
+4. **IncomingMessageWhatsappWebService** (`app/services/whatsapp/incoming_message_whatsapp_web_service.rb`)
+   - Processes incoming messages from WhatsApp Web
+   - Creates contacts, conversations, and messages in Chatwoot
 
-## Security Considerations
+5. **WhatsappEventsJob** (`app/jobs/webhooks/whatsapp_events_job.rb`)
+   - Routes incoming events to the appropriate handler based on the channel type
 
-- Ensure that the communication between Chatwoot and the wweb.js server is secured (e.g., using HTTPS and API key authentication)
-- Be aware that using unofficial methods to connect to WhatsApp may violate WhatsApp's terms of service
+### Message Flow
 
-## Future Improvements
+#### Incoming Messages:
+1. wweb.js server receives a message from WhatsApp Web
+2. wweb.js server sends a webhook to Chatwoot
+3. `WhatsappEventsJob` receives the webhook and routes it to `WhatsappWebEventsJob`
+4. `WhatsappWebEventsJob` calls `IncomingMessageWhatsappWebService`
+5. `IncomingMessageWhatsappWebService` creates or updates the contact, conversation, and message in Chatwoot
 
-- Implement support for template messages if possible
-- Enhance error handling and reconnection logic
-- Explore ways to improve the reliability and stability of the unofficial connection
+#### Outgoing Messages:
+1. Chatwoot user sends a message through the UI
+2. `WhatsappWebService#send_message` is called
+3. An HTTP POST request is sent to the wweb.js server
+4. wweb.js server sends the message through WhatsApp Web
+
+### Configuration
+
+- `WHATSAPP_WEB_API_URL`: The URL of the wweb.js server
+- `WHATSAPP_WEB_API_KEY`: API key for authenticating requests to the wweb.js server
+
+### Limitations and Considerations
+
+1. **No Template Support**: Unlike official WhatsApp integrations, template messages are not supported.
+2. **Reliability**: The connection may be less stable than official integrations due to the nature of browser automation.
+3. **Scalability**: Each WhatsApp Web instance requires a separate browser session, which may limit scalability.
+4. **Terms of Service**: Using unofficial methods to connect to WhatsApp may violate WhatsApp's terms of service.
+
+### Future Improvements
+
+1. Implement a more robust error handling and reconnection logic in the wweb.js server.
+2. Explore ways to support multiple WhatsApp Web instances on a single wweb.js server.
+3. Implement a queueing system for outgoing messages to handle rate limiting and improve reliability.
+4. Add support for more WhatsApp features as they become available through wweb.js.
+
+By implementing this unofficial integration, Chatwoot provides a solution for users who need WhatsApp integration but don't have access to the official API. However, users should be aware of the limitations and potential risks associated with using unofficial methods.
