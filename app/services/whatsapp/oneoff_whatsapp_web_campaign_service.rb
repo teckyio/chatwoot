@@ -22,15 +22,12 @@ class Whatsapp::OneoffWhatsappWebCampaignService
     campaign.account.contacts.tagged_with(audience_labels, any: true).each do |contact|
       next if contact.phone_number.blank?
 
-      send_message(to: contact.phone_number, content: campaign.message)
+      send_message(to: contact, content: campaign.message)
     end
   end
 
   def send_message(to:, content:)
-    Whatsapp::SendOnWhatsappWebService.new(
-      message: build_message(to, content),
-      inbox: inbox
-    ).perform
+    Whatsapp::SendOnWhatsappWebService.new(message: build_message(to, content)).perform
   end
 
   def build_message(to, content)
@@ -43,9 +40,12 @@ class Whatsapp::OneoffWhatsappWebCampaignService
     )
   end
 
-  def find_or_create_conversation(phone_number)
-    contact = inbox.contact_inboxes.find_by(source_id: phone_number)&.contact ||
-              inbox.account.contacts.create!(phone_number: phone_number)
-    Conversation.find_or_create_by!(account: campaign.account, inbox: inbox, contact: contact)
+  def find_or_create_conversation(contact)
+    Conversation.find_or_create_by!(
+      account_id: campaign.account.id,
+      inbox_id: inbox.id,
+      contact_id: contact.id,
+      status: ::Conversation.statuses[:open]
+    )
   end
 end

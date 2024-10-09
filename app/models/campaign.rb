@@ -56,6 +56,7 @@ class Campaign < ApplicationRecord
 
     Twilio::OneoffSmsCampaignService.new(campaign: self).perform if inbox.inbox_type == 'Twilio SMS'
     Sms::OneoffSmsCampaignService.new(campaign: self).perform if inbox.inbox_type == 'Sms'
+    Whatsapp::OneoffWhatsappWebCampaignService.new(campaign: self).perform if inbox.inbox_type == 'WhatsApp Unofficial'
   end
 
   private
@@ -81,20 +82,6 @@ class Campaign < ApplicationRecord
     else
       self.campaign_type = 'ongoing'
       self.scheduled_at = nil
-    end
-  end
-
-  def trigger!
-    return unless one_off?
-    return if completed?
-
-    case inbox.inbox_type
-    when 'Twilio SMS'
-      Twilio::OneoffSmsCampaignService.new(campaign: self).perform
-    when 'Sms'
-      Sms::OneoffSmsCampaignService.new(campaign: self).perform
-    when 'WhatsApp Unofficial'
-      Whatsapp::OneoffWhatsappWebCampaignService.new(campaign: self).perform
     end
   end
 
