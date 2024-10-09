@@ -7,6 +7,7 @@ export const getInboxSource = (type, phoneNumber, inbox) => {
 
     case INBOX_TYPES.TWILIO:
     case INBOX_TYPES.WHATSAPP:
+    case INBOX_TYPES.WHATSAPP_WEB:
       return phoneNumber || '';
 
     case INBOX_TYPES.EMAIL:
@@ -32,6 +33,9 @@ export const getReadableInboxByType = (type, phoneNumber) => {
 
     case INBOX_TYPES.WHATSAPP:
       return 'whatsapp';
+
+    case INBOX_TYPES.WHATSAPP_WEB:
+      return 'whatsapp_web';
 
     case INBOX_TYPES.API:
       return 'api';
@@ -68,6 +72,9 @@ export const getInboxClassByType = (type, phoneNumber) => {
 
     case INBOX_TYPES.WHATSAPP:
       return 'brand-whatsapp';
+
+    case INBOX_TYPES.WHATSAPP_WEB:
+      return 'brand-whatsapp-web';
 
     case INBOX_TYPES.API:
       return 'cloud';

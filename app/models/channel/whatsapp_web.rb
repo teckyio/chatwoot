@@ -30,7 +30,7 @@ class Channel::WhatsappWeb < ApplicationRecord
   end
 
   def messaging_window_enabled?
-    true
+    false
   end
 
   delegate :send_message, to: :provider_service

@@ -190,6 +190,9 @@ export default {
     },
 
     replyWindowBannerMessage() {
+      if (this.isAWhatsAppWebChannel) {
+        return '';
+      }
       if (this.isAWhatsAppChannel) {
         return this.$t('CONVERSATION.TWILIO_WHATSAPP_CAN_REPLY');
       }
@@ -206,6 +209,9 @@ export default {
       return this.$t('CONVERSATION.CANNOT_REPLY');
     },
     replyWindowLink() {
+      if (this.isAWhatsAppWebChannel) {
+        return '';
+      }
       if (this.isAWhatsAppChannel) {
         return REPLY_POLICY.FACEBOOK;
       }
@@ -215,6 +221,9 @@ export default {
       return '';
     },
     replyWindowLinkText() {
+      if (this.isAWhatsAppWebChannel) {
+        return '';
+      }
       if (this.isAWhatsAppChannel) {
         return this.$t('CONVERSATION.24_HOURS_WINDOW');
       }

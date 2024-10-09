@@ -4,6 +4,7 @@ export const INBOX_TYPES = {
   TWITTER: 'Channel::TwitterProfile',
   TWILIO: 'Channel::TwilioSms',
   WHATSAPP: 'Channel::Whatsapp',
+  WHATSAPP_WEB: 'Channel::WhatsappWeb',
   API: 'Channel::Api',
   EMAIL: 'Channel::Email',
   TELEGRAM: 'Channel::Telegram',
@@ -24,6 +25,7 @@ export const INBOX_FEATURE_MAP = {
     INBOX_TYPES.WEB,
     INBOX_TYPES.TWITTER,
     INBOX_TYPES.WHATSAPP,
+    INBOX_TYPES.WHATSAPP_WEB,
     INBOX_TYPES.TELEGRAM,
     INBOX_TYPES.API,
   ],
@@ -31,6 +33,7 @@ export const INBOX_FEATURE_MAP = {
     INBOX_TYPES.WEB,
     INBOX_TYPES.TWITTER,
     INBOX_TYPES.WHATSAPP,
+    INBOX_TYPES.WHATSAPP_WEB,
     INBOX_TYPES.TELEGRAM,
     INBOX_TYPES.API,
   ],
@@ -131,6 +134,9 @@ export default {
         this.channelType === INBOX_TYPES.WHATSAPP ||
         this.isATwilioWhatsAppChannel
       );
+    },
+    isAWhatsAppWebChannel() {
+      return this.channelType === INBOX_TYPES.WHATSAPP_WEB;
     },
   },
   methods: {
