@@ -56,8 +56,8 @@ Rails.application.routes.draw do
           resources :whatsapp_web, only: [] do
             collection do
               post :create_instance
-              get :get_qr_code
-              get :get_instance_status
+              get :qr_code
+              get :nstance_status
               delete :delete_instance
             end
           end

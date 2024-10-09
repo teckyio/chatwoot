@@ -1,15 +1,15 @@
-class Api::V1::WhatsappWebController < Api::V1::BaseController
+class Api::V1::Accounts::WhatsappWebController < Api::V1::Accounts::BaseController
   def create_instance
     response = WhatsappWebService.create_instance(Current.account.id)
     render json: response
   end
 
-  def get_qr_code
+  def qr_code
     response = WhatsappWebService.get_qr_code(Current.account.id, params[:uuid])
     render json: response
   end
 
-  def get_instance_status
+  def instance_status
     response = WhatsappWebService.get_instance_status(Current.account.id, params[:uuid])
     render json: response
   end

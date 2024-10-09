@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import { useAlert } from 'dashboard/composables';
 import PageHeader from '../../SettingsSubPageHeader.vue';
 import WhatsappWebClient from '../../../../../api/whatsappWebClient';
 
@@ -32,17 +33,16 @@ export default {
         this.instanceUuid = data.uuid;
         this.startPolling();
       } catch (error) {
-        this.$toast.error(this.$t('INBOX_MGMT.ADD.WHATSAPP_WEB.API_ERROR'));
+        // eslint-disable-next-line no-console
+        console.error('Error create instance:', error);
+        useAlert(this.$t('INBOX_MGMT.ADD.WHATSAPP_WEB.API_ERROR'));
       } finally {
         this.isCreating = false;
       }
     },
     async getQRCode() {
       try {
-        const { data } = await WhatsappWebClient.getQRCode(
-          this.accountId,
-          this.instanceUuid
-        );
+        const { data } = await WhatsappWebClient.getQRCode(this.instanceUuid);
         this.qrCode = data.qrCode;
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -52,7 +52,6 @@ export default {
     async getInstanceStatus() {
       try {
         const { data } = await WhatsappWebClient.getInstanceStatus(
-          this.accountId,
           this.instanceUuid
         );
         this.instanceStatus = data.status;
@@ -77,12 +76,11 @@ export default {
     async createInbox() {
       try {
         await this.$store.dispatch('inboxes/createWhatsAppWebInbox', {
-          accountId: this.accountId,
           uuid: this.instanceUuid,
         });
         this.$router.push({ name: 'settings_inboxes' });
       } catch (error) {
-        this.$toast.error(this.$t('INBOX_MGMT.ADD.WHATSAPP_WEB.INBOX_ERROR'));
+        useAlert(this.$t('INBOX_MGMT.ADD.WHATSAPP_WEB.INBOX_ERROR'));
       }
     },
   },

@@ -1,24 +1,29 @@
+/* global axios */
 import ApiClient from './ApiClient';
 
 class WhatsappWebClient extends ApiClient {
-  createInstance(accountId) {
-    return this.post(`accounts/${accountId}/whatsapp_web/create_instance`);
+  constructor() {
+    super('whatsapp_web', { accountScoped: true });
   }
 
-  getQRCode(accountId, uuid) {
-    return this.get(`accounts/${accountId}/whatsapp_web/get_qr_code`, {
+  createInstance() {
+    return axios.post(`${this.url}/create_instance`);
+  }
+
+  getQRCode(uuid) {
+    return axios.get(`${this.url}/get_qr_code`, {
       params: { uuid },
     });
   }
 
-  getInstanceStatus(accountId, uuid) {
-    return this.get(`accounts/${accountId}/whatsapp_web/get_instance_status`, {
+  getInstanceStatus(uuid) {
+    return axios.get(`${this.url}/get_instance_status`, {
       params: { uuid },
     });
   }
 
-  deleteInstance(accountId, uuid) {
-    return this.delete(`accounts/${accountId}/whatsapp_web/delete_instance`, {
+  deleteInstance(uuid) {
+    return axios.delete(`${this.url}/delete_instance`, {
       params: { uuid },
     });
   }
