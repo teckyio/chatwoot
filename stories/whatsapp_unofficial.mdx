@@ -1,0 +1,39 @@
+# WhatsApp Unofficial Integration
+
+## Overview
+
+The WhatsApp Unofficial integration allows Chatwoot to connect with WhatsApp using the wweb.js library, which provides an unofficial method to interact with WhatsApp Web. This integration is useful for users who don't have access to the official WhatsApp Business API.
+
+## Features
+
+- Send and receive WhatsApp messages
+- Handle attachments (images, documents, etc.)
+- Distinguish between different WhatsApp Web instances using a unique UUID
+
+## Setup
+
+1. Deploy a separate Node.js server running wweb.js
+2. Configure the WhatsApp Web API URL and API key in your Chatwoot environment
+3. Create a new WhatsApp Web inbox in Chatwoot, which will generate a unique UUID
+
+## How it works
+
+1. The wweb.js server handles the connection to WhatsApp Web
+2. Incoming messages are sent from the wweb.js server to Chatwoot via webhooks
+3. Outgoing messages are sent from Chatwoot to the wweb.js server, which then sends them through WhatsApp Web
+
+## Limitations
+
+- Template messages are not supported
+- Some advanced features available in the official WhatsApp Business API may not be available
+
+## Security Considerations
+
+- Ensure that the communication between Chatwoot and the wweb.js server is secured (e.g., using HTTPS and API key authentication)
+- Be aware that using unofficial methods to connect to WhatsApp may violate WhatsApp's terms of service
+
+## Future Improvements
+
+- Implement support for template messages if possible
+- Enhance error handling and reconnection logic
+- Explore ways to improve the reliability and stability of the unofficial connection
