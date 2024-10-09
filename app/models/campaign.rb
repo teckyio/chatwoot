@@ -84,6 +84,20 @@ class Campaign < ApplicationRecord
     end
   end
 
+  def trigger!
+    return unless one_off?
+    return if completed?
+
+    case inbox.inbox_type
+    when 'Twilio SMS'
+      Twilio::OneoffSmsCampaignService.new(campaign: self).perform
+    when 'Sms'
+      Sms::OneoffSmsCampaignService.new(campaign: self).perform
+    when 'WhatsApp Unofficial'
+      Whatsapp::OneoffWhatsappWebCampaignService.new(campaign: self).perform
+    end
+  end
+
   def validate_url
     return unless trigger_rules['url']
 
