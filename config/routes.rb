@@ -57,8 +57,8 @@ Rails.application.routes.draw do
             collection do
               post :create_instance
               get :qr_code
-              get :nstance_status
-              delete :delete_instance
+              get :instance_status
+              delete :instance
             end
           end
           resources :contact_inboxes, only: [] do

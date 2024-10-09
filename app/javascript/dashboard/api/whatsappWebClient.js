@@ -11,13 +11,13 @@ class WhatsappWebClient extends ApiClient {
   }
 
   getQRCode(uuid) {
-    return axios.get(`${this.url}/get_qr_code`, {
+    return axios.get(`${this.url}/qr_code`, {
       params: { uuid },
     });
   }
 
   getInstanceStatus(uuid) {
-    return axios.get(`${this.url}/get_instance_status`, {
+    return axios.get(`${this.url}/instance_status`, {
       params: { uuid },
     });
   }

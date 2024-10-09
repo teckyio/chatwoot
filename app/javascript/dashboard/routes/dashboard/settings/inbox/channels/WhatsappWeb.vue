@@ -1,14 +1,13 @@
 <script>
 import { mapGetters } from 'vuex';
 import { useAlert } from 'dashboard/composables';
-import QRCode from 'qrcode.vue';
+import { useQRCode } from '@vueuse/integrations/useQRCode';
 import PageHeader from '../../SettingsSubPageHeader.vue';
 import WhatsappWebClient from '../../../../../api/whatsappWebClient';
 
 export default {
   components: {
     PageHeader,
-    QRCode,
   },
   data() {
     return {
@@ -45,7 +44,7 @@ export default {
     async getQRCode() {
       try {
         const { data } = await WhatsappWebClient.getQRCode(this.instanceUuid);
-        this.qrCode = data.qrCode;
+        this.qrCode = useQRCode(data.qrCode);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error fetching QR code:', error);
@@ -111,7 +110,7 @@ export default {
       </div>
       <div v-else class="mt-4">
         <h3>{{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.QRCODE.LABEL') }}</h3>
-        <QRCode :value="qrCode" :size="256" level="M" />
+        <img :src="qrCode" />
         <p class="mt-2">
           {{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.QRCODE.DESCRIPTION') }}
         </p>
