@@ -1,12 +1,14 @@
 <script>
 import { mapGetters } from 'vuex';
 import { useAlert } from 'dashboard/composables';
+import QRCode from 'qrcode.vue';
 import PageHeader from '../../SettingsSubPageHeader.vue';
 import WhatsappWebClient from '../../../../../api/whatsappWebClient';
 
 export default {
   components: {
     PageHeader,
+    QRCode,
   },
   data() {
     return {
@@ -97,15 +99,22 @@ export default {
     />
     <div class="w-[65%] flex-shrink-0 flex-grow-0 max-w-[65%]">
       <button
+        v-if="!instanceUuid"
         class="button button--primary"
         :disabled="isCreating"
         @click="createInstance"
       >
         {{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.CREATE_BUTTON') }}
       </button>
-      <div v-if="qrCode" class="mt-4">
+      <div v-else-if="!qrCode" class="mt-4">
+        <p>{{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.LOADING_QR') }}</p>
+      </div>
+      <div v-else class="mt-4">
         <h3>{{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.QRCODE.LABEL') }}</h3>
-        <img :src="qrCode" alt="WhatsApp QR Code" />
+        <QRCode :value="qrCode" :size="256" level="M" />
+        <p class="mt-2">
+          {{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.QRCODE.DESCRIPTION') }}
+        </p>
       </div>
       <div v-if="instanceStatus" class="mt-4">
         <h3>{{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.STATUS') }}</h3>
