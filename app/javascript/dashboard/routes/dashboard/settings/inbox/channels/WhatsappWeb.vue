@@ -16,18 +16,26 @@ export default {
       instanceUuid: null,
       instanceStatus: null,
       pollingInterval: null,
+      inboxName: '',
     };
   },
   computed: {
     ...mapGetters({
       accountId: 'getCurrentAccountId',
     }),
+    isInboxNameValid() {
+      return this.inboxName.trim().length > 0;
+    },
   },
   beforeDestroy() {
     this.stopPolling();
   },
   methods: {
     async createInstance() {
+      if (!this.isInboxNameValid) {
+        useAlert(this.$t('INBOX_MGMT.ADD.WHATSAPP_WEB.INBOX_NAME_ERROR'));
+        return;
+      }
       this.isCreating = true;
       try {
         const { data } = await WhatsappWebClient.createInstance(this.accountId);
@@ -78,6 +86,7 @@ export default {
       try {
         await this.$store.dispatch('inboxes/createWhatsAppWebInbox', {
           uuid: this.instanceUuid,
+          name: this.inboxName,
         });
         this.$router.push({ name: 'settings_inboxes' });
       } catch (error) {
@@ -97,10 +106,22 @@ export default {
       :header-content="$t('INBOX_MGMT.ADD.WHATSAPP_WEB.DESC')"
     />
     <div class="w-[65%] flex-shrink-0 flex-grow-0 max-w-[65%]">
+      <div v-if="!instanceUuid" class="mb-4">
+        <label class="block mb-2" for="inbox-name">
+          {{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.INBOX_NAME') }}
+        </label>
+        <input
+          id="inbox-name"
+          v-model.trim="inboxName"
+          type="text"
+          class="w-full rounded-md border border-slate-300 px-3 py-2"
+          :placeholder="$t('INBOX_MGMT.ADD.WHATSAPP_WEB.INBOX_NAME_PLACEHOLDER')"
+        />
+      </div>
       <button
         v-if="!instanceUuid"
         class="button button--primary"
-        :disabled="isCreating"
+        :disabled="isCreating || !isInboxNameValid"
         @click="createInstance"
       >
         {{ $t('INBOX_MGMT.ADD.WHATSAPP_WEB.CREATE_BUTTON') }}

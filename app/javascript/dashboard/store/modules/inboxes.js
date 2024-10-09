@@ -199,10 +199,11 @@ export const actions = {
       throw new Error(error);
     }
   },
-  createWhatsAppWebInbox: async ({ commit }, { uuid }) => {
+  createWhatsAppWebInbox: async ({ commit }, { uuid, name }) => {
     try {
       commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: true });
       const inboxData = {
+        name,
         channel: {
           type: 'whatsapp_web',
           uuid: uuid,
