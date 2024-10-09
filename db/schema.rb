@@ -395,12 +395,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_09_060110) do
     t.index ["phone_number"], name: "index_channel_whatsapp_on_phone_number", unique: true
   end
 
-  create_table "channel_whatsapp_webs", force: :cascade do |t|
+  create_table "channel_whatsapp_web", force: :cascade do |t|
     t.string "uuid"
     t.integer "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["uuid"], name: "index_channel_whatsapp_webs_on_uuid", unique: true
+    t.index ["uuid"], name: "index_channel_whatsapp_web_on_uuid", unique: true
   end
 
   create_table "contact_inboxes", force: :cascade do |t|

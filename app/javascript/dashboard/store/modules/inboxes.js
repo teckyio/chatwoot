@@ -5,7 +5,6 @@ import InboxesAPI from '../../api/inboxes';
 import WebChannel from '../../api/channel/webChannel';
 import FBChannel from '../../api/channel/fbChannel';
 import TwilioChannel from '../../api/channel/twilioChannel';
-import WhatsappWebClient from '../../api/whatsappWebClient';
 import { throwErrorMessage } from '../utils/api';
 import AnalyticsHelper from '../../helper/AnalyticsHelper';
 import { ACCOUNT_EVENTS } from '../../helper/AnalyticsHelper/events';
@@ -200,13 +199,14 @@ export const actions = {
       throw new Error(error);
     }
   },
-  createWhatsAppWebInbox: async ({ commit }, { accountId, uuid }) => {
+  createWhatsAppWebInbox: async ({ commit }, { uuid }) => {
     try {
       commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: true });
-      const response = await WhatsappWebClient.createInstance(accountId);
       const inboxData = {
-        channel_type: 'whatsapp_web',
-        uuid: uuid,
+        channel: {
+          type: 'whatsapp_web',
+          uuid: uuid,
+        },
       };
       const inboxResponse = await InboxesAPI.create(inboxData);
       commit(types.default.ADD_INBOXES, inboxResponse.data);

@@ -3,10 +3,10 @@
 # Table name: channel_whatsapp_web
 #
 #  id         :bigint           not null, primary key
-#  uuid       :string           not null
+#  uuid       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  account_id :integer          not null
+#  account_id :integer
 #
 # Indexes
 #
