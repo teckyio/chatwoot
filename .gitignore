@@ -75,4 +75,7 @@ yalc.lock
 yarn-debug.log*
 .yarn-integrity
 
+# aider
+.aider*
+
 /storybook-static
