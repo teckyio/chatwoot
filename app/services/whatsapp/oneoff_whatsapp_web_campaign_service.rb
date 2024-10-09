@@ -40,16 +40,18 @@ class Whatsapp::OneoffWhatsappWebCampaignService
       conversation: conversation,
       message_type: :outgoing,
       content: content,
-      sender: contact_inbox.contact
+      sender: contact_inbox.contact,
+      contact: contact_inbox.contact
     )
   end
 
   def find_or_create_contact_inbox(contact)
     ContactInbox.find_or_create_by!(
       contact: contact,
-      inbox: inbox,
-      source_id: contact.phone_number
-    )
+      inbox: inbox
+    ) do |contact_inbox|
+      contact_inbox.source_id = contact.phone_number
+    end
   end
 
   def find_or_create_conversation(contact_inbox)
