@@ -32,16 +32,14 @@ class Whatsapp::OneoffWhatsappWebCampaignService
 
   def build_message(to, content)
     contact_inbox = find_or_create_contact_inbox(to)
-    conversation = find_or_create_conversation(contact_inbox)
-    
+    conversation = find_or_create_conversation(to, contact_inbox)
+
     Message.new(
       account: campaign.account,
       inbox: inbox,
       conversation: conversation,
       message_type: :outgoing,
-      content: content,
-      sender: contact_inbox.contact,
-      contact: contact_inbox.contact
+      content: content
     )
   end
 
@@ -54,10 +52,11 @@ class Whatsapp::OneoffWhatsappWebCampaignService
     end
   end
 
-  def find_or_create_conversation(contact_inbox)
+  def find_or_create_conversation(contact, contact_inbox)
     Conversation.find_or_create_by!(
       account_id: campaign.account.id,
       inbox_id: inbox.id,
+      contact_id: contact.id,
       contact_inbox_id: contact_inbox.id,
       status: ::Conversation.statuses[:open]
     )
